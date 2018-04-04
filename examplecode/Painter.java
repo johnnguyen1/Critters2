@@ -10,7 +10,7 @@
  * Slip days used: <0>
  * Fall 2015
  */
-package startercode;
+package examplecode;
 
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -21,6 +21,7 @@ public class Painter {
 	/*
 	 * Returns a square or a circle, according to shapeIndex
 	 */
+	/*
 	static Shape getIcon(int shapeIndex) {
 		Shape s = null;
 		int size = 100;
@@ -35,10 +36,11 @@ public class Painter {
 		s.setStroke(javafx.scene.paint.Color.BLUE); // outline
 		return s;
 	}
-	
+	*/
 	/*
 	 * Paints the shape on a grid.
 	 */
+	/*
 	public static void paint() {
 		Main.grid.getChildren().clear(); // clean up grid.
 		for (int i = 0; i <= 1; i++) {
@@ -47,4 +49,5 @@ public class Painter {
 		}
 		
 	}
+	*/
 }

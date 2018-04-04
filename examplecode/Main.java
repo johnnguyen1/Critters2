@@ -1,4 +1,4 @@
-package startercode;
+package examplecode;
 	
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -20,7 +20,7 @@ public class Main extends Application {
 			primaryStage.show();
 			
 			// Paints the icons.
-			Painter.paint();
+			//Painter.paint();
 			
 		} catch(Exception e) {
 			e.printStackTrace();		

@@ -1,7 +1,15 @@
 package assignment5;
 
+import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static assignment5.Critter.CritterShape.STAR;
 
 public abstract class Critter {
 	/* NEW FOR PROJECT 5 */
@@ -12,29 +20,34 @@ public abstract class Critter {
 		DIAMOND,
 		STAR
 	}
-	
+
 	/* the default color is white, which I hope makes critters invisible by default
 	 * If you change the background color of your View component, then update the default
-	 * color to be the same as you background 
-	 * 
-	 * critters must override at least one of the following three methods, it is not 
+	 * color to be the same as you background
+	 *
+	 * critters must override at least one of the following three methods, it is not
 	 * proper for critters to remain invisible in the view
-	 * 
-	 * If a critter only overrides the outline color, then it will look like a non-filled 
-	 * shape, at least, that's the intent. You can edit these default methods however you 
-	 * need to, but please preserve that intent as you implement them. 
+	 *
+	 * If a critter only overrides the outline color, then it will look like a non-filled
+	 * shape, at least, that's the intent. You can edit these default methods however you
+	 * need to, but please preserve that intent as you implement them.
 	 */
-	public javafx.scene.paint.Color viewColor() { 
-		return javafx.scene.paint.Color.WHITE; 
+	public javafx.scene.paint.Color viewColor() {
+		return javafx.scene.paint.Color.WHITE;
 	}
-	
-	public javafx.scene.paint.Color viewOutlineColor() { return viewColor(); }
-	public javafx.scene.paint.Color viewFillColor() { return viewColor(); }
-	
-	public abstract CritterShape viewShape(); 
-	
+
+	public javafx.scene.paint.Color viewOutlineColor() {
+		return viewColor();
+	}
+
+	public javafx.scene.paint.Color viewFillColor() {
+		return viewColor();
+	}
+
+	public abstract CritterShape viewShape();
+
 	private static String myPackage;
-	private	static List<Critter> population = new java.util.ArrayList<Critter>();
+	private static List<Critter> population = new java.util.ArrayList<Critter>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
 
 	// Gets the package name.  This assumes that Critter and its subclasses are all in the same package.
@@ -47,6 +60,7 @@ public abstract class Critter {
 
 
 	private static java.util.Random rand = new java.util.Random();
+
 	public static int getRandomInt(int max) {
 		return rand.nextInt(max);
 	}
@@ -84,8 +98,9 @@ public abstract class Critter {
 
 	/**
 	 * examines the location identified by the critter’s current coordinates and moving one or two positions
+	 *
 	 * @param direction where the creature wants to go
-	 * @param steps run or walk
+	 * @param steps     run or walk
 	 * @return null if position is not occupied
 	 */
 	protected final String look(int direction, boolean steps) {
@@ -93,18 +108,18 @@ public abstract class Critter {
 		int x = this.x_coord;
 		int y = this.y_coord;
 		int iter = 1;
-		if(steps){
+		if (steps) {
 			iter = 2;
 		}
 
 		int d = direction;
-		for(int i = 0; i<iter; i++) {
+		for (int i = 0; i < iter; i++) {
 			int coord[] = newCoords(direction, x, y);
 			x = coord[0];
 			y = coord[1];
 		}
 		ArrayList<Integer> loc = sameLocation(x, y);
-		if(loc.size()>0){
+		if (loc.size() > 0) {
 
 			return population.get(loc.get(0)).toString();
 		}
@@ -114,6 +129,7 @@ public abstract class Critter {
 
 	/**
 	 * walks a critter in a specified direction
+	 *
 	 * @param direction the direction (0-8) of where the critter will walk
 	 */
 	protected final void walk(int direction) {
@@ -125,6 +141,7 @@ public abstract class Critter {
 
 	/**
 	 * runs a critter in a specified direction
+	 *
 	 * @param direction the direction (0-8) of where the critter will run
 	 */
 	protected final void run(int direction) {   //how to do without zig zag
@@ -136,12 +153,13 @@ public abstract class Critter {
 
 	/**
 	 * Determines what happens to a coordinate based on direction
+	 *
 	 * @param direction where to go
-	 * @param x x-coordinate
-	 * @param y y-coordinate
+	 * @param x         x-coordinate
+	 * @param y         y-coordinate
 	 * @return array with x and y as 1st and 2nd element respectively
 	 */
-	protected final int[] newCoords(int direction, int x, int y){
+	protected final int[] newCoords(int direction, int x, int y) {
 		int ret[] = new int[2];
 		int d = direction;
 		if (d == 2) {
@@ -171,8 +189,9 @@ public abstract class Critter {
 
 	/**
 	 * decreases a critter 1 unit on an axis, ensures cyclic movement
+	 *
 	 * @param coord the x or y coordinate
-	 * @param axis x or y axis
+	 * @param axis  x or y axis
 	 */
 	private static int decByOne(int coord, char axis) { //0 is x, 1 is y
 		int ax = Params.world_width;
@@ -187,8 +206,9 @@ public abstract class Critter {
 
 	/**
 	 * increases a critter 1 unit on an axis, ensures cyclic movement
+	 *
 	 * @param coord the x or y coordinate
-	 * @param axis x or y axis
+	 * @param axis  x or y axis
 	 */
 	private static int incByOne(int coord, char axis) { //0 is x, 1 is y
 		int ax = Params.world_width;
@@ -201,19 +221,21 @@ public abstract class Critter {
 
 	/**
 	 * sets an offspring's stats and places it in an adjacent position of its parent
+	 *
 	 * @param offspring the critter offspring
 	 * @param direction is where the offspring is to be placed
 	 */
 	protected final void reproduce(Critter offspring, int direction) {
-		if(energy < Params.min_reproduce_energy) return;
-		energy = (int)Math.ceil((double)energy/2.0);
-		offspring.energy = (int)Math.floor((double)energy/2.0);
+		if (energy < Params.min_reproduce_energy) return;
+		energy = (int) Math.ceil((double) energy / 2.0);
+		offspring.energy = (int) Math.floor((double) energy / 2.0);
 		offspring.x_coord = this.x_coord;
 		offspring.y_coord = this.y_coord;
 		offspring.energy += Params.walk_energy_cost;
 		offspring.walk(direction);
 		babies.add(offspring);
 	}
+
 	/**
 	 * abstract method to determine each critter's timestep
 	 */
@@ -239,10 +261,10 @@ public abstract class Critter {
 		try {
 			Class c = Class.forName(myPackage + "." + critter_class_name);
 			Object obj = c.newInstance();
-			if(!(obj instanceof Critter)){
+			if (!(obj instanceof Critter)) {
 				throw new InvalidCritterException(critter_class_name);
 			}
-			Critter crit = (Critter)c.newInstance();
+			Critter crit = (Critter) c.newInstance();
 			crit.x_coord = getRandomInt(Params.world_width);
 			crit.y_coord = getRandomInt(Params.world_height);
 			crit.energy = Params.start_energy;
@@ -261,6 +283,7 @@ public abstract class Critter {
 	 * create and initialize a baby Critter subclass.
 	 * critter_class_name must be the unqualified name of a concrete subclass of Critter, if not,
 	 * an InvalidCritterException must be thrown.
+	 *
 	 * @param baby_class_name name of baby critter
 	 * @throws InvalidCritterException
 	 */
@@ -268,10 +291,10 @@ public abstract class Critter {
 		try {
 			Class b = Class.forName(myPackage + "." + baby_class_name);
 			Object obj = b.newInstance();
-			if(!(obj instanceof Critter)){
+			if (!(obj instanceof Critter)) {
 				throw new InvalidCritterException(baby_class_name);
 			}
-			Critter baby = (Critter)b.newInstance();
+			Critter baby = (Critter) b.newInstance();
 			baby.y_coord = getRandomInt(Params.world_height);
 			baby.x_coord = getRandomInt(Params.world_width);
 			baby.energy = Params.start_energy;
@@ -298,7 +321,7 @@ public abstract class Critter {
 		List<Critter> result = new java.util.ArrayList<Critter>();
 		Critter crit;
 		try {
-			Class c = Class.forName(myPackage + "." +critter_class_name);
+			Class c = Class.forName(myPackage + "." + critter_class_name);
 			crit = (Critter) c.newInstance();
 		} catch (ClassNotFoundException cne) {
 			throw new InvalidCritterException(critter_class_name);
@@ -317,6 +340,7 @@ public abstract class Critter {
 
 	/**
 	 * Prints out how many Critters of each type there are on the board.
+	 *
 	 * @param critters List of Critters.
 	 */
 	public static void runStats(List<Critter> critters) {
@@ -406,7 +430,7 @@ public abstract class Critter {
 		for (Critter c : population) {    //each critter does its timestep
 			c.doTimeStep();
 		}
-		if(population.size()>0) {   //clears those who die from moving
+		if (population.size() > 0) {   //clears those who die from moving
 			ArrayList<Integer> dead = new ArrayList<>();
 			for (int i = 0; i < population.size(); i++) {
 				if (population.get(i).energy <= 0) {
@@ -415,7 +439,7 @@ public abstract class Critter {
 			}
 			remove(dead);
 		}
-		if(population.size()>1) {
+		if (population.size() > 1) {
 			int[][] elevMap = new int[Params.world_height][Params.world_width]; //grid to determine frequency at a location
 			for (Critter c : population) {
 				int col = c.x_coord;
@@ -432,10 +456,10 @@ public abstract class Critter {
 			}
 		}
 		updateRestEnergy(); //updates rest energy and removes dead
-		for(int i = 0; i<Params.refresh_algae_count; i++){  //creates algae
-			try{
+		for (int i = 0; i < Params.refresh_algae_count; i++) {  //creates algae
+			try {
 				makeBaby("Algae");
-			}catch (InvalidCritterException ice){
+			} catch (InvalidCritterException ice) {
 				System.out.println("error creating Algae");
 			}
 		}
@@ -448,7 +472,7 @@ public abstract class Critter {
 	 * updates rest energy and removes dead critters
 	 */
 	private static void updateRestEnergy() {
-		if(population.size()>0) {
+		if (population.size() > 0) {
 			ArrayList<Integer> dead = new ArrayList<>();
 			for (int i = 0; i < population.size(); i++) {
 				population.get(i).energy -= Params.rest_energy_cost;
@@ -462,6 +486,7 @@ public abstract class Critter {
 
 	/**
 	 * removes dead critters given a list
+	 *
 	 * @param dead list of dead critters' indexes
 	 */
 	private static void remove(ArrayList<Integer> dead) {
@@ -473,6 +498,7 @@ public abstract class Critter {
 
 	/**
 	 * Determines which creatures have the same location as the specified coordinate
+	 *
 	 * @param row x position
 	 * @param col y position
 	 * @return list the indexes of the critters with the specified position
@@ -486,8 +512,10 @@ public abstract class Critter {
 		}
 		return sameList;
 	}
+
 	/**
 	 * Handles encounters for every critter in a specified location
+	 *
 	 * @param x x position
 	 * @param y y position
 	 */
@@ -499,17 +527,17 @@ public abstract class Critter {
 			int b = inds.get(1);
 			int aEnergy = population.get(a).energy;
 			int bEnergy = population.get(b).energy;
-			if(aEnergy<=0) {
+			if (aEnergy <= 0) {
 				inds.remove(0);
 				dead.add(a);
 
 			}
-			if(bEnergy<=0) {
+			if (bEnergy <= 0) {
 				inds.remove(1);
 				dead.add(b);
 			}
-			if(aEnergy<=0 || bEnergy<=0) {
-				for(int i = dead.size()-1; i>=0; i--){ //work backward to not confuse indexes
+			if (aEnergy <= 0 || bEnergy <= 0) {
+				for (int i = dead.size() - 1; i >= 0; i--) { //work backward to not confuse indexes
 					int ind = dead.get(i);
 					population.remove(ind);
 				}
@@ -554,42 +582,47 @@ public abstract class Critter {
 	/**
 	 * displays world as it is right now
 	 */
-	public static void displayWorld() {
-		char[][] grid = new char[Params.world_height + 2][Params.world_width + 2];
-		//this handles the border printing
-		for (int row = 0; row < grid.length; row++) {
-			for (int col = 0; col < grid[0].length; col++) {
-				if (row == 0 || row == grid.length - 1) {
-					if (col == 0 || col == grid[0].length - 1) {
-						grid[row][col] = '+';
-					} else {
-						grid[row][col] = '-';
-					}
-				} else if (col == 0 || col == grid[0].length - 1) {
-					grid[row][col] = '|';
-				}
-			}
-		}
-		//this puts each critter in the appropriate part of the grid
-		//Overwrites to the critter later in the list
-		for (Critter c : population) {
-			int col = c.x_coord + 1;
-			int row = c.y_coord + 1;
-			grid[row][col] = c.toString().charAt(0);
-		}
+	public static GridPane displayWorld() {
+		GridPane gp = new GridPane();
+		gp.setGridLinesVisible(true);
+		Shape[][] grid = new Shape[Params.world_height][Params.world_width];
+
+		//for (Critter c : population) {
+		//	int col = c.x_coord;
+		//	int row = c.y_coord;
+		//	CritterShape cs = c.viewShape();
+		//	grid[row][col] = getIcon(cs);
+		//1}
+		return gp;
+
 		//prints out grid
-		for (int row = 0; row < grid.length; row++) {
-			for (int col = 0; col < grid[0].length; col++) {
-				if (grid[row][col] == '\0')
-					System.out.print(" ");
-				else
-					System.out.print(grid[row][col]);
-			}
-			System.out.println();
-		}
+
 	}
 
+	private static Shape getIcon(CritterShape shape) {
+		Shape s = null;
+		int size = 100;
+
+		switch (shape) {
+			case CIRCLE:
+				s = new Circle(size);
+				s.setFill(Color.BLUE);
+				break;
+			case SQUARE:
+				s = new Circle(size / 2);
+				s.setFill(Color.RED);
+				break;
+			case TRIANGLE:
+				s = new Circle(size / 2);
+				s.setFill(Color.GREEN);
+				break;
+			case DIAMOND:
+			case STAR:
+		}
+		// set the outline of the shape
+		s.setStroke(javafx.scene.paint.Color.BLUE); // outline
+		return s;
 
 
-
+	}
 }
